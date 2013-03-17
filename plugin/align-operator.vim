@@ -89,13 +89,22 @@ function! s:match_pos(line, char)
 	return pos
 endfunction
 
-nmap <silent> gl :set opfunc=<SID>opfuncl<CR>g@
-vmap <silent> gl :<C-U>call <SID>opfuncl(visualmode(), 1)<CR>
-nmap <silent> gL :set opfunc=<SID>opfuncL<CR>g@
-vmap <silent> gL :<C-U>call <SID>opfuncL(visualmode(), 1)<CR>
+nnoremap <silent> <Plug>AlignRight :set opfunc=<SID>opfuncl<CR>g@
+vnoremap <silent> <Plug>VAlignRight :<C-U>call <SID>opfuncl(visualmode(), 1)<CR>
+nnoremap <silent> <Plug>AlignLeft :set opfunc=<SID>opfuncL<CR>g@
+vnoremap <silent> <Plug>VAlignLeft :<C-U>call <SID>opfuncL(visualmode(), 1)<CR>
+nnoremap <silent> <Plug>AlignEqual :set opfunc=<SID>opfunceq<CR>g@
+vnoremap <silent> <Plug>VAlignEqual :<C-U>call <SID>opfunceq(visualmode(), 1)<CR>
+nnoremap <silent> <Plug>AlignColon :set opfunc=<SID>opfuncco<CR>g@
+vnoremap <silent> <Plug>VAlignColon :<C-U>call <SID>opfuncco(visualmode(), 1)<CR>
 
-nmap <silent> g= :set opfunc=<SID>opfunceq<CR>g@
-vmap <silent> g= :<C-U>call <SID>opfunceq(visualmode(), 1)<CR>
-
-nmap <silent> g: :set opfunc=<SID>opfuncco<CR>g@
-vmap <silent> g: :<C-U>call <SID>opfuncco(visualmode(), 1)<CR>
+if !exists("g:align_no_mappings") || !g:align_no_mappings
+	nmap <silent> gl <Plug>AlignRight
+	vmap <silent> gl <Plug>VAlignRight
+	nmap <silent> gL <Plug>AlignLeft
+	vmap <silent> gL <Plug>VAlignLeft
+	nmap <silent> g= <Plug>AlignEqual
+	vmap <silent> g= <Plug>VAlignEqual
+	nmap <silent> g: <Plug>AlignColon
+	vmap <silent> g: <Plug>VAlignColon
+endif

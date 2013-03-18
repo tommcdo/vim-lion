@@ -7,7 +7,7 @@ This plugin is only available if 'compatible' is not set.
 
 INTRODUCTION                                    *align-operator*
 
-This plugin provides operators for aligning code to a specific character.
+This plugin provides operators for aligning text to a specific character.
 The operators are designed to work as closely as possible to the built-in
 Vim |operators|. 
 
@@ -65,5 +65,9 @@ TODO                                            *align-operator-todo*
 1. Compute virtual position of {char} more accurately by considering whether
    the column of occurrences of <Tab> characters aligns with a tab column.
 2. Add support for |blockwise-visual| mode.
+
+MY LOVE                                         *align-operator-my-love*
+
+The love of my life (and Vim plugin hero) is my beautiful wife, Maya. <3
 
  vim:tw=78:ts=8:ft=help:norl:

@@ -27,16 +27,19 @@ function! s:alignColon(type, ...)
 	return s:align('left', a:type, a:0, ':')
 endfunction
 
+" Align a range to a particular character
 function! s:align(mode, type, vis, align_char)
 	let sel_save = &selection
 	let &selection = "inclusive"
 
+	" Do we have a character from argument, or should we get one from input?
 	if a:align_char == ''
 		let align_char = nr2char(getchar())
 	else
 		let align_char = a:align_char
 	endif
 
+	" Determine range boundaries
 	if a:vis
 		let start_line = line("'<")
 		let end_line = line("'>")
@@ -45,21 +48,26 @@ function! s:align(mode, type, vis, align_char)
 		let end_line = line("']")
 	endif
 
-	let iteration = 1
-	let changed = 0
+	let changed = 0 " TODO: Use this for 'all' mode when I get around to it
+
+	" Align for each character up to count
 	for iteration in range(1, s:count)
-		let line_virtual_pos = []
-		let longest = -1
+		let line_virtual_pos = [] " Keep track of positions
+		let longest = -1          " Track longest sequence
+
+		" Find the longest substring before the align character
 		for line_number in range(start_line, end_line)
 			let line_str = getline(line_number)
+			" Find the 'real' and 'virtual' positions of the align character in this line
 			let [real_pos, virtual_pos] = s:match_pos(a:mode, line_str, align_char, iteration)
 			let line_virtual_pos += [[real_pos, virtual_pos]]
 			if longest != -1 && virtual_pos != -1 && virtual_pos != longest
-				let changed = 1
+				let changed = 1 " TODO: Detect changes in 'all' mode
 			endif
 			let longest = max([longest, virtual_pos])
 		endfor
 
+		" Align each line according to the longest
 		for line_number in range(start_line, end_line)
 			let line_str = getline(line_number)
 			let [real_pos, virtual_pos] = line_virtual_pos[(line_number - start_line)]
@@ -70,36 +78,9 @@ function! s:align(mode, type, vis, align_char)
 			endif
 		endfor
 		if longest == -1
-			let changed = 1
+			let changed = 1 " TODO: Detect changes in 'all' mode
 		endif
 	endfor
-
-	" Testing area for gl
-	" something = 1
-	" something really quite long = 6
-	" another thing = 2
-	" yet another thing = 3
-	" short = 4
-	" x = 5
-
-	" Testing area for gL
-	" something: 1
-	" something really quite long: 6
-	" another thing: 2
-	" yet another thing: 3
-	" short: 4
-	" x: 5
-
-	" Testing area for gl with repeats
-	" monkey = tiger = fish
-	" a = b = c
-	" foo = barfalomew = window
-
-	" Testing area for gL with repeats
-	" alice, bob, charlie
-	" daniel, ernest, frank
-	" greg, harrison, ingrid
-
 endfunction
 
 " Match the position of a character in a line after accounting for artificial width set by tabs
@@ -122,8 +103,8 @@ function! s:tabs2spaces(line, ...)
 	return substitute(a:line, "\<Tab>", repeat(' ', &tabstop), 'g')
 endfunction
 
+" Get the first non-whitespace after [count] instances of [char]
 function! s:first_non_ws_after(line, char, count)
-	" monkey, tiger, fish
 	let char_pos = match(a:line, a:char, 0, a:count)
 	if char_pos == -1
 		return -1
@@ -133,6 +114,7 @@ function! s:first_non_ws_after(line, char, count)
 	endif
 endfunction
 
+" Echo a string and wait for input (used when I'm debugging)
 function! s:debug_str(str)
 	echomsg a:str
 	let x = getchar()

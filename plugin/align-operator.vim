@@ -1,22 +1,29 @@
 " Vim Align Operator
 
-function! s:opfuncl(type, ...)
-	return s:align('l', a:type, a:0, '')
+let s:count = 1
+
+function! s:command(func)
+	let s:count = v:count1
+	return ":" . "\<C-U>set opfunc=" . a:func . "\<CR>g@"
 endfunction
 
-function! s:opfuncL(type, ...)
-	return s:align('L', a:type, a:0, '')
+function! s:alignRight(type, ...)
+	return s:align('right', a:type, a:0, '')
 endfunction
 
-function! s:opfunceq(type, ...)
-	return s:align('l', a:type, a:0, '=')
+function! s:alignLeft(type, ...)
+	return s:align('left', a:type, a:0, '')
 endfunction
 
-function! s:opfuncco(type, ...)
-	return s:align('L', a:type, a:0, ':')
+function! s:alignEqual(type, ...)
+	return s:align('right', a:type, a:0, '=')
 endfunction
 
-function! s:align(mode, type, vis, align_char)
+function! s:alignColon(type, ...)
+	return s:align('left', a:type, a:0, ':')
+endfunction
+
+function! s:align(mode, type, count, align_char)
 	let sel_save = &selection
 	let &selection = "inclusive"
 	let reg_save = @@
@@ -27,7 +34,7 @@ function! s:align(mode, type, vis, align_char)
 		let align_char = a:align_char
 	endif
 
-	if a:vis
+	if a:count
 		silent exe "normal! `<" . a:type . "`>y"
 	elseif a:type == 'line'
 		silent exe "normal! '[V']y"
@@ -102,10 +109,10 @@ endfunction
 function! s:match_pos(mode, line, char, count)
 	" Get the line as if it had tabs instead of spaces
 	let line = s:tabs2spaces(a:line)
-	if a:mode == 'l'
+	if a:mode == 'right'
 		let virtual_pos = match(line, a:char, 0, a:count)
 		let real_pos = match(a:line, a:char, 0, a:count)
-	elseif a:mode == 'L'
+	elseif a:mode == 'left'
 		let virtual_pos = s:first_non_ws_after(line, a:char, a:count)
 		let real_pos = s:first_non_ws_after(a:line, a:char, a:count)
 	endif
@@ -134,14 +141,14 @@ function! s:debug_str(str)
 	let x = getchar()
 endfunction
 
-nnoremap <silent> <Plug>AlignRight :set opfunc=<SID>opfuncl<CR>g@
-vnoremap <silent> <Plug>VAlignRight :<C-U>call <SID>opfuncl(visualmode(), 1)<CR>
-nnoremap <silent> <Plug>AlignLeft :set opfunc=<SID>opfuncL<CR>g@
-vnoremap <silent> <Plug>VAlignLeft :<C-U>call <SID>opfuncL(visualmode(), 1)<CR>
-nnoremap <silent> <Plug>AlignEqual :set opfunc=<SID>opfunceq<CR>g@
-vnoremap <silent> <Plug>VAlignEqual :<C-U>call <SID>opfunceq(visualmode(), 1)<CR>
-nnoremap <silent> <Plug>AlignColon :set opfunc=<SID>opfuncco<CR>g@
-vnoremap <silent> <Plug>VAlignColon :<C-U>call <SID>opfuncco(visualmode(), 1)<CR>
+nnoremap <silent> <expr> <Plug>AlignRight <SID>command("<SID>alignRight")
+vnoremap <silent> <Plug>VAlignRight :<C-U>call <SID>alignRight(visualmode(), v:count1)<CR>
+nnoremap <silent> <expr> <Plug>AlignLeft <SID>command("<SID>alignLeft")
+vnoremap <silent> <Plug>VAlignLeft :<C-U>call <SID>alignLeft(visualmode(), v:count1)<CR>
+nnoremap <silent> <expr> <Plug>AlignEqual <SID>command("<SID>alignEqual")
+vnoremap <silent> <Plug>VAlignEqual :<C-U>call <SID>alignEqual(visualmode(), v:count1)<CR>
+nnoremap <silent> <expr> <Plug>AlignColon <SID>command("<SID>alignColon")
+vnoremap <silent> <Plug>VAlignColon :<C-U>call <SID>alignColon(visualmode(), v:count1)<CR>
 
 if !exists("g:align_no_mappings") || !g:align_no_mappings
 	nmap <silent> gl <Plug>AlignRight

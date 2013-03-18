@@ -1,0 +1,69 @@
+*align-operator.txt*  Plugin to define a code alignment operator
+
+Author: Tom McDonald <http://github.com/tommcdo>
+License: Same terms as Vim itself (see |license|)
+
+This plugin is only available if 'compatible' is not set.
+
+INTRODUCTION                                    *align-operator*
+
+This plugin provides operators for aligning code to a specific character.
+The operators are designed to work as closely as possible to the built-in
+Vim |operators|. 
+
+MAPPINGS                                        *align-operator-mappings*
+
+[count]gl{motion}{char} Align text within {motion} to [count] occurrences
+                        of {char}. Spaces are added to the left of each
+                        {char} in the line up to the [count]th position in
+                        the line.
+
+[count]gL{motion}{char} Align text within {motion} to [count] occurrences
+                        of {char}. Spaces are added to the right of each
+                        {char} in the line up to the [count]th position in
+                        the line.
+
+[count]g={motion}       Align text within {motion} to [count] "=" characters.
+                        Synonym for "[count]gl{motion}=".
+
+[count]g:{motion}       Align text within {motion} to [count] ":" characters.
+                        Synonym for "[count]gL{motion}:".
+
+EXAMPLES                                        *align-operator-examples*
+
+In the below examples, an asterisk (*) denotes the position of cursor. This
+is primarily to help understand {motion}s from the example commands.
+
+  Old text                  Command     New text ~
+
+  $name = "Tom";             glip=      $name     = "Tom";
+  $birthday =* "Jan 12";     g=ip       $birthday = "Jan 12";
+  $age = 25;                            $age      = 25;
+
+  fish, monkey, giraffe*     2gL2j,     fish, monkey,   giraffe
+  a, b, c                               a,    b,        c
+  45, saturday, 0                       45,   saturday, 0
+
+ISSUES                                          *align-operator-issues*
+
+These operators currently do not support |blockwise-visual| mode. They may
+appear to work, but they are simply using the start and ending line numbers
+and operating on each of those lines as a whole.
+
+Text may not be properly aligned with <Tab> characters are mixed in with
+other characters (that is, anywhere but the beginning of the line).
+
+The align operators compute the virtual position of {char} by substituting
+<Tab> characters with a number of spaces, defined by 'tabstop'. If used across
+lines with different indentation levels, the resulting aligned text may look
+inconsistent if 'tabstop' is changed (e.g. in someone else's text editor).
+This may also be the case if tabs are mixed with spaces or used after the
+first non-whitespace character on the line.
+
+TODO                                            *align-operator-todo*
+
+1. Compute virtual position of {char} more accurately by considering whether
+   the column of occurrences of <Tab> characters aligns with a tab column.
+2. Add support for |blockwise-visual| mode.
+
+ vim:tw=78:ts=8:ft=help:norl:

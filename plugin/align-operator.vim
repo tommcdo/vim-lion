@@ -41,53 +41,33 @@ function! s:align(mode, type, vis, align_char)
 	let end_line = line("'>")
 
 	let iteration = 1
-	let longest = -1
-	let last_non_ws = -1
 	let changed = 0
 	while !changed
+		let line_virtual_pos = []
+		let longest = -1
 		for line_number in range(start_line, end_line)
 			let line_str = getline(line_number)
-			let current = s:match_pos(line_str, align_char, iteration)
-			if a:mode == 'l'
-				if longest != -1 && current != longest
-					let changed = 1
-				endif
-			elseif a:mode == 'L'
-				" TODO: Correctly detect changes in L mode
-				let realpos = match(line_str, align_char, 0, iteration)
-				"let nothing = s:debug_str(line_str[(realpos + 1):])
-				let current_non_ws = realpos + s:match_pos(line_str[(realpos + 1):], '[^[:space:]]', 1)
-				if last_non_ws != -1 && current_non_ws != last_non_ws
-					let changed = 1
-				endif
-				let last_non_ws = max([last_non_ws, current_non_ws])
-
-				" Testing area for gL with multiple alignments
-				" a, b, c
-				" tiger, monkey, giraffe
-				" foo, bar, baz
-
+			let [real_pos, virtual_pos] = s:match_pos(a:mode, line_str, align_char, iteration)
+			let line_virtual_pos += [[real_pos, virtual_pos]]
+			if longest != -1 && virtual_pos != -1 && virtual_pos != longest
+				let changed = 1
 			endif
-			let longest = max([current, longest])
+			let longest = max([longest, virtual_pos])
 		endfor
 
 		for line_number in range(start_line, end_line)
 			let line_str = getline(line_number)
-			let pos = s:match_pos(line_str, align_char, iteration)
-			if pos < longest
-				if a:mode == 'l'
-					let padded = repeat(' ', (longest - pos)) . align_char
-				elseif a:mode == 'L'
-					let padded = align_char . repeat(' ', (longest - pos))
-				else
-					let padded = align_char
-				endif
-				let startpos = match(line_str, align_char, 0, iteration)
-				let new_line = line_str[:(startpos - 1)] . substitute(line_str[(startpos):], align_char, padded, '')
+			let [real_pos, virtual_pos] = line_virtual_pos[(line_number - start_line)]
+			if virtual_pos != -1 && virtual_pos < longest
+				let spaces = repeat(' ', (longest - virtual_pos))
+				let new_line = line_str[:(real_pos - 1)] . spaces . line_str[(real_pos):]
 				let result = setline(line_number, new_line)
 			endif
 		endfor
 		let iteration = iteration + 1
+		if longest == -1
+			let changed = 1
+		endif
 	endwhile
 
 	" Testing area for gl
@@ -106,21 +86,47 @@ function! s:align(mode, type, vis, align_char)
 	" short: 4
 	" x: 5
 
-	" Testing area for gl with multiple alignments
+	" Testing area for gl with repeats
+	" monkey = tiger = fish
 	" a = b = c
-	" foo = bar = baz
-	" tiger = monkey = wolf
-	" something = another thing = you
+	" foo = bar = window
 
-	let &selection = sel_save
-	let @@ = reg_save
+	" Testing area for gL with repeats
+	" alice, bob, charlie
+	" daniel, ernest, frank
+	" greg, harrison, ingrid
+
 endfunction
 
 " Match the position of a character in a line after accounting for artificial width set by tabs
-function! s:match_pos(line, char, count)
-	let line = substitute(a:line, "\<Tab>", repeat(' ', &tabstop), 'g')
-	let pos = match(line, a:char, 0, a:count)
-	return pos
+function! s:match_pos(mode, line, char, count)
+	" Get the line as if it had tabs instead of spaces
+	let line = s:tabs2spaces(a:line)
+	if a:mode == 'l'
+		let virtual_pos = match(line, a:char, 0, a:count)
+		let real_pos = match(a:line, a:char, 0, a:count)
+	elseif a:mode == 'L'
+		let virtual_pos = s:first_non_ws_after(line, a:char, a:count)
+		let real_pos = s:first_non_ws_after(a:line, a:char, a:count)
+	endif
+	return [real_pos, virtual_pos]
+endfunction
+
+" Convert tabs to spaces in a line
+function! s:tabs2spaces(line, ...)
+	" TODO: Account for tabs occurring at columns that don't define tabstops
+	return substitute(a:line, "\<Tab>", repeat(' ', &tabstop), 'g')
+endfunction
+
+function! s:first_non_ws_after(line, char, count)
+	" monkey, tiger, fish
+	let char_pos = match(a:line, a:char, 0, a:count)
+	if char_pos == -1
+		return -1
+	else
+		let m = match(a:line, '[^[:space:]]', char_pos + 1)
+		return m
+	endif
 endfunction
 
 function! s:debug_str(str)

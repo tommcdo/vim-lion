@@ -2,9 +2,13 @@
 
 let s:count = 1
 
-function! s:command(func)
+function! s:command(func, ...)
 	let s:count = v:count1
-	return ":" . "\<C-U>set opfunc=" . a:func . "\<CR>g@"
+	if a:0
+		return ":" . "\<C-U>call " . a:func . "(visualmode(), 1)\<CR>"
+	else
+		return ":" . "\<C-U>set opfunc=" . a:func . "\<CR>g@"
+	endif
 endfunction
 
 function! s:alignRight(type, ...)
@@ -23,10 +27,9 @@ function! s:alignColon(type, ...)
 	return s:align('left', a:type, a:0, ':')
 endfunction
 
-function! s:align(mode, type, count, align_char)
+function! s:align(mode, type, vis, align_char)
 	let sel_save = &selection
 	let &selection = "inclusive"
-	let reg_save = @@
 
 	if a:align_char == ''
 		let align_char = nr2char(getchar())
@@ -34,22 +37,17 @@ function! s:align(mode, type, count, align_char)
 		let align_char = a:align_char
 	endif
 
-	if a:count
-		silent exe "normal! `<" . a:type . "`>y"
-	elseif a:type == 'line'
-		silent exe "normal! '[V']y"
-	elseif a:type == 'block'
-		silent exe "normal! `[\<C-V>`]y"
+	if a:vis
+		let start_line = line("'<")
+		let end_line = line("'>")
 	else
-		silent exe "normal! `[v`]y"
+		let start_line = line("'[")
+		let end_line = line("']")
 	endif
-
-	let start_line = line("'<")
-	let end_line = line("'>")
 
 	let iteration = 1
 	let changed = 0
-	while !changed
+	for iteration in range(1, s:count)
 		let line_virtual_pos = []
 		let longest = -1
 		for line_number in range(start_line, end_line)
@@ -71,11 +69,10 @@ function! s:align(mode, type, count, align_char)
 				let result = setline(line_number, new_line)
 			endif
 		endfor
-		let iteration = iteration + 1
 		if longest == -1
 			let changed = 1
 		endif
-	endwhile
+	endfor
 
 	" Testing area for gl
 	" something = 1
@@ -96,7 +93,7 @@ function! s:align(mode, type, count, align_char)
 	" Testing area for gl with repeats
 	" monkey = tiger = fish
 	" a = b = c
-	" foo = bar = window
+	" foo = barfalomew = window
 
 	" Testing area for gL with repeats
 	" alice, bob, charlie
@@ -142,13 +139,13 @@ function! s:debug_str(str)
 endfunction
 
 nnoremap <silent> <expr> <Plug>AlignRight <SID>command("<SID>alignRight")
-vnoremap <silent> <Plug>VAlignRight :<C-U>call <SID>alignRight(visualmode(), v:count1)<CR>
+vnoremap <silent> <expr> <Plug>VAlignRight <SID>command("<SID>alignRight", 1)
 nnoremap <silent> <expr> <Plug>AlignLeft <SID>command("<SID>alignLeft")
-vnoremap <silent> <Plug>VAlignLeft :<C-U>call <SID>alignLeft(visualmode(), v:count1)<CR>
+nnoremap <silent> <expr> <Plug>VAlignLeft <SID>command("<SID>alignLeft", 1)
 nnoremap <silent> <expr> <Plug>AlignEqual <SID>command("<SID>alignEqual")
-vnoremap <silent> <Plug>VAlignEqual :<C-U>call <SID>alignEqual(visualmode(), v:count1)<CR>
+nnoremap <silent> <expr> <Plug>VAlignEqual <SID>command("<SID>alignEqual", 1)
 nnoremap <silent> <expr> <Plug>AlignColon <SID>command("<SID>alignColon")
-vnoremap <silent> <Plug>VAlignColon :<C-U>call <SID>alignColon(visualmode(), v:count1)<CR>
+nnoremap <silent> <expr> <Plug>VAlignColon <SID>command("<SID>alignColon", 1)
 
 if !exists("g:align_no_mappings") || !g:align_no_mappings
 	nmap <silent> gl <Plug>AlignRight

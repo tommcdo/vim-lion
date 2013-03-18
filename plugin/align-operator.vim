@@ -55,11 +55,18 @@ function! s:align(mode, type, vis, align_char)
 			elseif a:mode == 'L'
 				" TODO: Correctly detect changes in L mode
 				let realpos = match(line_str, align_char, 0, iteration)
-				let current_non_ws = s:match_pos(line_str[(realpos + 1):], '[^[:space:]]', 1)
+				"let nothing = s:debug_str(line_str[(realpos + 1):])
+				let current_non_ws = realpos + s:match_pos(line_str[(realpos + 1):], '[^[:space:]]', 1)
 				if last_non_ws != -1 && current_non_ws != last_non_ws
 					let changed = 1
 				endif
 				let last_non_ws = max([last_non_ws, current_non_ws])
+
+				" Testing area for gL with multiple alignments
+				" a, b, c
+				" tiger, monkey, giraffe
+				" foo, bar, baz
+
 			endif
 			let longest = max([current, longest])
 		endfor
@@ -105,11 +112,6 @@ function! s:align(mode, type, vis, align_char)
 	" tiger = monkey = wolf
 	" something = another thing = you
 
-	" Testing area for gL with multiple alignments
-	" a, b, c
-	" tiger, monkey, giraffe
-	" foo, bar, baz
-
 	let &selection = sel_save
 	let @@ = reg_save
 endfunction
@@ -119,6 +121,11 @@ function! s:match_pos(line, char, count)
 	let line = substitute(a:line, "\<Tab>", repeat(' ', &tabstop), 'g')
 	let pos = match(line, a:char, 0, a:count)
 	return pos
+endfunction
+
+function! s:debug_str(str)
+	echomsg a:str
+	let x = getchar()
 endfunction
 
 nnoremap <silent> <Plug>AlignRight :set opfunc=<SID>opfuncl<CR>g@

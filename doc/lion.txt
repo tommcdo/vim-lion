@@ -64,7 +64,6 @@ first non-whitespace character on the line.
 "gli{." will not work.
 
 TODO                                            *lion-todo*
->>>>>>> Renamed plugin, minor fix in doc:doc/lion.txt
 
 1. Compute virtual position of {char} more accurately by considering whether
    the column of occurrences of <Tab> characters aligns with a tab column.

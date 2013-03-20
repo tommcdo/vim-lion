@@ -97,10 +97,27 @@ function! s:match_pos(mode, line, char, count)
 	return [real_pos, virtual_pos]
 endfunction
 
-" Convert tabs to spaces in a line
+" Convert tabs to spaces, accounting for tabs not aligned to stops
 function! s:tabs2spaces(line, ...)
-	" TODO: Account for tabs occurring at columns that don't define tabstops
-	return substitute(a:line, "\<Tab>", repeat(' ', &tabstop), 'g')
+	let line = ''
+	if a:0
+		let cnt = (a:1 % &tabstop) " Adjust for starting column
+	else
+		let cnt = 0
+	endif
+	for idx in range(strlen(a:line))
+		let char = a:line[idx]
+		if char == "\<Tab>"
+			let num_spaces = (&tabstop - cnt)
+			let line = line . repeat(' ', num_spaces)
+			let cnt += num_spaces
+		else
+			let line = line . char
+			let cnt += 1
+		endif
+		let cnt = (cnt % &tabstop)
+	endfor
+	return line
 endfunction
 
 " Get the first non-whitespace after [count] instances of [char]

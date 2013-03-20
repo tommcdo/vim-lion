@@ -50,25 +50,18 @@ These operators currently do not support |blockwise-visual| mode. They may
 appear to work, but they are simply using the start and ending line numbers
 and operating on each of those lines as a whole.
 
-Text may not be properly aligned with <Tab> characters are mixed in with
-other characters (that is, anywhere but the beginning of the line).
-
 The align operators compute the virtual position of {char} by substituting
 <Tab> characters with a number of spaces, defined by 'tabstop'. If used across
 lines with different indentation levels, the resulting aligned text may look
 inconsistent if 'tabstop' is changed (e.g. in someone else's text editor).
-This may also be the case if tabs are mixed with spaces or used after the
-first non-whitespace character on the line.
 
 {char} is interpreted as a single character pattern, so a command like
 "gli{." will not work.
 
 TODO                                            *lion-todo*
 
-1. Compute virtual position of {char} more accurately by considering whether
-   the column of occurrences of <Tab> characters aligns with a tab column.
-2. Add support for |blockwise-visual| mode.
-3. Interpret {char} as a literal character instead of a pattern.
+1. Add support for |blockwise-visual| mode.
+2. Interpret {char} as a literal character instead of a pattern.
 
 MY LOVE                                         *lion-my-love*
 

@@ -1,4 +1,6 @@
-" Vim Align Operator
+" lion.vim - A Vim plugin for text alignment operators
+" Maintainer:   Tom McDonald <http://github.com/tommcdo>
+" Version:      1.0
 
 let s:count = 1
 
@@ -137,22 +139,22 @@ function! s:debug_str(str)
 	let x = getchar()
 endfunction
 
-nnoremap <silent> <expr> <Plug>AlignRight <SID>command("<SID>alignRight")
-vnoremap <silent> <expr> <Plug>VAlignRight <SID>command("<SID>alignRight", 1)
-nnoremap <silent> <expr> <Plug>AlignLeft <SID>command("<SID>alignLeft")
-nnoremap <silent> <expr> <Plug>VAlignLeft <SID>command("<SID>alignLeft", 1)
-nnoremap <silent> <expr> <Plug>AlignEqual <SID>command("<SID>alignEqual")
-nnoremap <silent> <expr> <Plug>VAlignEqual <SID>command("<SID>alignEqual", 1)
-nnoremap <silent> <expr> <Plug>AlignColon <SID>command("<SID>alignColon")
-nnoremap <silent> <expr> <Plug>VAlignColon <SID>command("<SID>alignColon", 1)
+nnoremap <silent> <expr> <Plug>LionRight <SID>command("<SID>alignRight")
+vnoremap <silent> <expr> <Plug>VLionRight <SID>command("<SID>alignRight", 1)
+nnoremap <silent> <expr> <Plug>LionLeft <SID>command("<SID>alignLeft")
+nnoremap <silent> <expr> <Plug>VLionLeft <SID>command("<SID>alignLeft", 1)
+nnoremap <silent> <expr> <Plug>LionEqual <SID>command("<SID>alignEqual")
+nnoremap <silent> <expr> <Plug>VLionEqual <SID>command("<SID>alignEqual", 1)
+nnoremap <silent> <expr> <Plug>LionColon <SID>command("<SID>alignColon")
+nnoremap <silent> <expr> <Plug>VLionColon <SID>command("<SID>alignColon", 1)
 
 if !exists("g:align_no_mappings") || !g:align_no_mappings
-	nmap <silent> gl <Plug>AlignRight
-	vmap <silent> gl <Plug>VAlignRight
-	nmap <silent> gL <Plug>AlignLeft
-	vmap <silent> gL <Plug>VAlignLeft
-	nmap <silent> g= <Plug>AlignEqual
-	vmap <silent> g= <Plug>VAlignEqual
-	nmap <silent> g: <Plug>AlignColon
-	vmap <silent> g: <Plug>VAlignColon
+	nmap <silent> gl <Plug>LionRight
+	vmap <silent> gl <Plug>VLionRight
+	nmap <silent> gL <Plug>LionLeft
+	vmap <silent> gL <Plug>VLionLeft
+	nmap <silent> g= <Plug>LionEqual
+	vmap <silent> g= <Plug>VLionEqual
+	nmap <silent> g: <Plug>LionColon
+	vmap <silent> g: <Plug>VLionColon
 endif

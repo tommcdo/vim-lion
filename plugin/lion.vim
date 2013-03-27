@@ -76,7 +76,7 @@ function! s:align(mode, type, vis, align_char)
 			if virtual_pos != -1 && virtual_pos < longest
 				let spaces = repeat(' ', (longest - virtual_pos))
 				let new_line = line_str[:(real_pos - 1)] . spaces . line_str[(real_pos):]
-				let result = setline(line_number, new_line)
+				call setline(line_number, new_line)
 			endif
 		endfor
 		if longest == -1

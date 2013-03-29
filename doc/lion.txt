@@ -13,19 +13,23 @@ Vim |operators|.
 
 MAPPINGS                                        *lion-mappings*
 
+                                                *gl*
 [count]gl{motion}{char} Align text within {motion} to [count] occurrences
                         of {char}. Spaces are added to the left of each
                         {char} in the line up to the [count]th position in
                         the line.
 
+                                                *gL*
 [count]gL{motion}{char} Align text within {motion} to [count] occurrences
                         of {char}. Spaces are added to the right of each
                         {char} in the line up to the [count]th position in
                         the line.
 
+                                                *g=*
 [count]g={motion}       Align text within {motion} to [count] "=" characters.
                         Synonym for "[count]gl{motion}=".
 
+                                                *g:*
 [count]g:{motion}       Align text within {motion} to [count] ":" characters.
                         Synonym for "[count]gL{motion}:".
 

@@ -143,6 +143,14 @@ function! s:debug_str(str)
 	let x = getchar()
 endfunction
 
+function! s:assign_map(map, func)
+	if a:map == ''
+		return
+	endif
+	execute 'nmap <silent> ' . a:map . ' <Plug>Lion' . a:func
+	execute 'vmap <silent> ' . a:map . ' <Plug>VLion' . a:func
+endfunction
+
 nnoremap <silent> <expr> <Plug>LionRight <SID>command("<SID>alignRight")
 vnoremap <silent> <expr> <Plug>VLionRight <SID>command("<SID>alignRight", 1)
 nnoremap <silent> <expr> <Plug>LionLeft <SID>command("<SID>alignLeft")
@@ -152,13 +160,26 @@ nnoremap <silent> <expr> <Plug>VLionEqual <SID>command("<SID>alignEqual", 1)
 nnoremap <silent> <expr> <Plug>LionColon <SID>command("<SID>alignColon")
 nnoremap <silent> <expr> <Plug>VLionColon <SID>command("<SID>alignColon", 1)
 
-if !exists("g:align_no_mappings") || !g:align_no_mappings
-	nmap <silent> gl <Plug>LionRight
-	vmap <silent> gl <Plug>VLionRight
-	nmap <silent> gL <Plug>LionLeft
-	vmap <silent> gL <Plug>VLionLeft
-	nmap <silent> g= <Plug>LionEqual
-	vmap <silent> g= <Plug>VLionEqual
-	nmap <silent> g: <Plug>LionColon
-	vmap <silent> g: <Plug>VLionColon
+if !exists('g:lion_create_maps')
+	let g:lion_create_maps = 1
+endif
+
+if g:lion_create_maps
+	if !exists('g:lion_map_right')
+		let g:lion_map_right = 'gl'
+	endif
+	if !exists('g:lion_map_left')
+		let g:lion_map_left = 'gL'
+	endif
+	if !exists('g:lion_map_equal')
+		let g:lion_map_equal = 'g='
+	endif
+	if !exists('g:lion_map_colon')
+		let g:lion_map_colon = 'g:'
+	endif
+	
+	call s:assign_map(g:lion_map_right, 'Right')
+	call s:assign_map(g:lion_map_left, 'Left')
+	call s:assign_map(g:lion_map_equal, 'Equal')
+	call s:assign_map(g:lion_map_colon, 'Colon')
 endif

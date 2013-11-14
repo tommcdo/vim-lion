@@ -29,7 +29,7 @@ MAPPINGS                                        *lion-mappings*
 [count]g={motion}       Align text within {motion} to [count] "=" characters.
                         Synonym for "[count]gl{motion}=".
 
-                                                *g:* *lion-left-align*
+                                                *g:* *lion-colon-align*
 [count]g:{motion}       Align text within {motion} to [count] ":" characters.
                         Synonym for "[count]gL{motion}:".
 

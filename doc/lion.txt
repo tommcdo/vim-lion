@@ -77,8 +77,7 @@ inconsistent if 'tabstop' is changed (e.g. in someone else's text editor).
 
 TODO                                            *lion-todo*
 
-1. Add support for |blockwise-visual| mode.
-2. Interpret {char} as a literal character instead of a pattern.
+See https://github.com/tommcdo/vim-lion/issues for bugs and issues.
 
 MY LOVE                                         *lion-my-love*
 

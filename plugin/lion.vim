@@ -95,7 +95,7 @@ endfunction
 function! s:match_pos(mode, line, char, count)
 	" Get the line as if it had tabs instead of spaces
 	let line = s:tabs2spaces(a:line)
-	let pattern = escape(a:char, '^$.')
+	let pattern = escape(a:char, '~^$.')
 	if a:mode == 'right'
 		let virtual_pos = match(line, pattern, 0, a:count)
 		let real_pos = match(a:line, pattern, 0, a:count)

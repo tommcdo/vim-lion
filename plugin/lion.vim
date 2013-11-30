@@ -87,6 +87,8 @@ function! s:align(mode, type, vis, align_char)
 			let changed = 1 " TODO: Detect changes in 'all' mode
 		endif
 	endfor
+
+	silent! call repeat#set("\<Plug>LionRepeat".align_char)
 endfunction
 
 " Match the position of a character in a line after accounting for artificial width set by tabs
@@ -151,6 +153,7 @@ function! s:assign_map(map, func)
 	execute 'vmap <silent> ' . a:map . ' <Plug>VLion' . a:func
 endfunction
 
+nnoremap <silent> <Plug>LionRepeat .
 nnoremap <silent> <expr> <Plug>LionRight <SID>command("<SID>alignRight")
 vnoremap <silent> <expr> <Plug>VLionRight <SID>command("<SID>alignRight", 1)
 nnoremap <silent> <expr> <Plug>LionLeft <SID>command("<SID>alignLeft")

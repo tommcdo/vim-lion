@@ -43,12 +43,11 @@ function! s:align(mode, type, vis, align_char)
 
 	" Determine range boundaries
 	if a:vis
-		let start_line = line("'<")
-		let end_line = line("'>")
+		let pos = s:getpos("'<", "'>", visualmode())
 	else
-		let start_line = line("'[")
-		let end_line = line("']")
+		let pos = s:getpos("'[", "']", a:type)
 	endif
+	let [start_line, end_line, start_col, end_col, middle_start_col, middle_end_col] = pos
 
 	let changed = 0 " TODO: Use this for 'all' mode when I get around to it
 
@@ -59,9 +58,19 @@ function! s:align(mode, type, vis, align_char)
 
 		" Find the longest substring before the align character
 		for line_number in range(start_line, end_line)
+			if line_number == start_line
+				let start = start_col
+			else
+				let start = middle_start_col
+			endif
+			if line_number == end_line
+				let end = end_col
+			else
+				let end = middle_end_col
+			endif
 			let line_str = getline(line_number)
 			" Find the 'real' and 'virtual' positions of the align character in this line
-			let [real_pos, virtual_pos] = s:match_pos(a:mode, line_str, align_char, iteration)
+			let [real_pos, virtual_pos] = s:match_pos(a:mode, line_str, align_char, iteration, line_number, start, end)
 			let line_virtual_pos += [[real_pos, virtual_pos]]
 			if longest != -1 && virtual_pos != -1 && virtual_pos != longest
 				let changed = 1 " TODO: Detect changes in 'all' mode
@@ -91,47 +100,45 @@ function! s:align(mode, type, vis, align_char)
 	silent! call repeat#set("\<Plug>LionRepeat".align_char)
 endfunction
 
+function! s:getpos(start, end, mode)
+	let [start_bufnr, start_line, start_col, start_off] = getpos(a:start)
+	let [end_bufnr, end_line, end_col, end_off] = getpos(a:end)
+	let [middle_start_col, middle_end_col] = [0, -1]
+	if a:mode == 'V' || a:mode == 'line'
+		let [start_col, end_col] = [0, -1]
+	elseif a:mode == "\<C-V>"
+		let [middle_start_col, end_start_col] = [start_col, end_col]
+	endif
+	return [start_line, end_line, start_col, end_col, middle_start_col, middle_end_col]
+endfunction
+
 " Match the position of a character in a line after accounting for artificial width set by tabs
-function! s:match_pos(mode, line, char, count)
+function! s:match_pos(mode, line, char, count, line_number, start, end)
 	" Get the line as if it had tabs instead of spaces
-	let line = s:tabs2spaces(a:line)
 	let pattern = escape(a:char, '~^$.')
+	let start = virtcol([a:line_number, a:start])
+	let end = virtcol([a:line_number, a:end])
+	if a:end == -1
+		let line = a:line
+	else
+		let line = a:line[:(a:end - 1)]
+	endif
 	if a:mode == 'right'
-		let virtual_pos = match(line, pattern, 0, a:count)
-		let real_pos = match(a:line, pattern, 0, a:count)
+		let real_pos = match(line, pattern, a:start - 1, a:count)
 	elseif a:mode == 'left'
-		let virtual_pos = s:first_non_ws_after(line, pattern, a:count)
-		let real_pos = s:first_non_ws_after(a:line, pattern, a:count)
+		let real_pos = s:first_non_ws_after(line, pattern, a:start - 1, a:count)
+	endif
+	if real_pos == -1
+		let virtual_pos = -1
+	else
+		let virtual_pos = virtcol([a:line_number, real_pos])
 	endif
 	return [real_pos, virtual_pos]
 endfunction
 
-" Convert tabs to spaces, accounting for tabs not aligned to stops
-function! s:tabs2spaces(line, ...)
-	let line = ''
-	if a:0
-		let cnt = (a:1 % &tabstop) " Adjust for starting column
-	else
-		let cnt = 0
-	endif
-	for idx in range(strlen(a:line))
-		let char = a:line[idx]
-		if char == "\<Tab>"
-			let num_spaces = (&tabstop - cnt)
-			let line = line . repeat(' ', num_spaces)
-			let cnt += num_spaces
-		else
-			let line = line . char
-			let cnt += 1
-		endif
-		let cnt = (cnt % &tabstop)
-	endfor
-	return line
-endfunction
-
 " Get the first non-whitespace after [count] instances of [char]
-function! s:first_non_ws_after(line, pattern, count)
-	let char_pos = match(a:line, a:pattern, 0, a:count)
+function! s:first_non_ws_after(line, pattern, start, count)
+	let char_pos = match(a:line, a:pattern, a:start, a:count)
 	if char_pos == -1
 		return -1
 	else
@@ -142,7 +149,7 @@ endfunction
 
 " Echo a string and wait for input (used when I'm debugging)
 function! s:debug_str(str)
-	echomsg a:str
+	echo a:str
 	let x = getchar()
 endfunction
 

@@ -107,7 +107,7 @@ function! s:getpos(start, end, mode)
 	if a:mode == 'V' || a:mode == 'line'
 		let [start_col, end_col] = [0, -1]
 	elseif a:mode == "\<C-V>"
-		let [middle_start_col, end_start_col] = [start_col, end_col]
+		let [middle_start_col, middle_end_col] = [start_col, end_col]
 	endif
 	return [start_line, end_line, start_col, end_col, middle_start_col, middle_end_col]
 endfunction

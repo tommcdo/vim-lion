@@ -101,8 +101,8 @@ function! s:align(mode, type, vis, align_char)
 endfunction
 
 function! s:getpos(start, end, mode)
-	let [start_bufnr, start_line, start_col, start_off] = getpos(a:start)
-	let [end_bufnr, end_line, end_col, end_off] = getpos(a:end)
+	let [_, start_line, start_col, _] = getpos(a:start)
+	let [_, end_line, end_col, _] = getpos(a:end)
 	let [middle_start_col, middle_end_col] = [0, -1]
 	if a:mode == 'V' || a:mode == 'line'
 		let [start_col, end_col] = [0, -1]
@@ -114,10 +114,7 @@ endfunction
 
 " Match the position of a character in a line after accounting for artificial width set by tabs
 function! s:match_pos(mode, line, char, count, line_number, start, end)
-	" Get the line as if it had tabs instead of spaces
 	let pattern = escape(a:char, '~^$.')
-	let start = virtcol([a:line_number, a:start])
-	let end = virtcol([a:line_number, a:end])
 	if a:end == -1
 		let line = a:line
 	else

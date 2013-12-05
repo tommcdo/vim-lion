@@ -37,6 +37,9 @@ function! s:align(mode, type, vis, align_char)
 	" Do we have a character from argument, or should we get one from input?
 	if a:align_char == ''
 		let align_char = nr2char(getchar())
+		if align_char == '/'
+			let align_char .= input('Pattern [/]: ')
+		endif
 	else
 		let align_char = a:align_char
 	endif
@@ -114,7 +117,15 @@ endfunction
 
 " Match the position of a character in a line after accounting for artificial width set by tabs
 function! s:match_pos(mode, line, char, count, line_number, start, end)
-	let pattern = escape(a:char, '~^$.')
+	if strlen(a:char) == 1
+		let pattern = escape(a:char, '~^$.')
+	else
+		let pattern = a:char[1:]
+		" Add start-of-match anchor at the end if there isn't already one in the pattern
+		if a:mode == 'left' && match(pattern, '\\zs') == -1
+			let pattern .= '\zs'
+		endif
+	endif
 	if a:end == -1
 		let line = a:line
 	else

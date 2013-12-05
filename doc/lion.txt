@@ -13,6 +13,9 @@ Vim |operators|.
 
 MAPPINGS                                        *lion-mappings*
 
+In the mappings below, if {char} is "/", a prompt will input a pattern to use
+for alignment. If the pattern is left blank, "/" will be used.
+
                                                 *gl* *lion-right-align*
 [count]gl{motion}{char} Align text within {motion} to [count] occurrences
                         of {char}. Spaces are added to the left of each

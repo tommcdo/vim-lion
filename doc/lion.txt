@@ -64,21 +64,7 @@ Mappings can be configured with the following options:
   g:lion_map_equal     Mapping for equal-align operator   g=
   g:lion_map_colon     Mapping for colon-align operator   g:
 
-ISSUES                                          *lion-issues*
-
-These operators currently do not support |blockwise-visual| mode. They may
-appear to work, but they are simply using the start and ending line numbers
-and operating on each of those lines as a whole.
-
-The align operators compute the virtual position of {char} by substituting
-<Tab> characters with a number of spaces, defined by 'tabstop'. If used across
-lines with different indentation levels, the resulting aligned text may look
-inconsistent if 'tabstop' is changed (e.g. in someone else's text editor).
-
-{char} is interpreted as a single character pattern, so a command like
-"gli{." will not work.
-
-TODO                                            *lion-todo*
+ISSUES AND TODO                                 *lion-issues* *lion-todo*
 
 See https://github.com/tommcdo/vim-lion/issues for bugs and issues.
 

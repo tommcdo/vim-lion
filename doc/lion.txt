@@ -1,6 +1,6 @@
 *lion.txt*  Plugin to define a code alignment operator
 
-Author: Tom McDonald <http://github.com/tommcdo>
+Author: Tom McDonald <http://tommcdo.com>
 License: Same terms as Vim itself (see |license|)
 
 This plugin is only available if 'compatible' is not set.

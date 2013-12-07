@@ -173,11 +173,11 @@ nnoremap <silent> <Plug>LionRepeat .
 nnoremap <silent> <expr> <Plug>LionRight <SID>command("<SID>alignRight")
 vnoremap <silent> <expr> <Plug>VLionRight <SID>command("<SID>alignRight", 1)
 nnoremap <silent> <expr> <Plug>LionLeft <SID>command("<SID>alignLeft")
-nnoremap <silent> <expr> <Plug>VLionLeft <SID>command("<SID>alignLeft", 1)
+vnoremap <silent> <expr> <Plug>VLionLeft <SID>command("<SID>alignLeft", 1)
 nnoremap <silent> <expr> <Plug>LionEqual <SID>command("<SID>alignEqual")
-nnoremap <silent> <expr> <Plug>VLionEqual <SID>command("<SID>alignEqual", 1)
+vnoremap <silent> <expr> <Plug>VLionEqual <SID>command("<SID>alignEqual", 1)
 nnoremap <silent> <expr> <Plug>LionColon <SID>command("<SID>alignColon")
-nnoremap <silent> <expr> <Plug>VLionColon <SID>command("<SID>alignColon", 1)
+vnoremap <silent> <expr> <Plug>VLionColon <SID>command("<SID>alignColon", 1)
 
 if !exists('g:lion_create_maps')
 	let g:lion_create_maps = 1

@@ -39,6 +39,11 @@ into
         'lion',    'alfred',   'batman',    'linus',
     );
 
+It is also possible to align text by a pattern. To enter a pattern, use `/` as
+the alignment character (e.g. `glip/`) and then you will be prompted to input
+the pattern. To align by `/`, simply leave the pattern empty (by pressing
+`Enter`).
+
 Installation
 ------------
 

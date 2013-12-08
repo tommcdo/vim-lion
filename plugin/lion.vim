@@ -35,13 +35,12 @@ function! s:align(mode, type, vis, align_char)
 	let &selection = "inclusive"
 
 	" Do we have a character from argument, or should we get one from input?
-	if a:align_char == ''
-		let align_char = nr2char(getchar())
-		if align_char == '/'
-			let align_char .= input('Pattern [/]: ')
-		endif
-	else
-		let align_char = a:align_char
+	let align_pattern = a:align_char
+	if align_pattern == ''
+		let align_pattern = nr2char(getchar())
+	endif
+	if align_pattern == '/'
+		let align_pattern .= input('Pattern [/]: ')
 	endif
 
 	" Determine range boundaries
@@ -73,7 +72,7 @@ function! s:align(mode, type, vis, align_char)
 			endif
 			let line_str = getline(line_number)
 			" Find the 'real' and 'virtual' positions of the align character in this line
-			let [real_pos, virtual_pos] = s:match_pos(a:mode, line_str, align_char, iteration, line_number, start, end)
+			let [real_pos, virtual_pos] = s:match_pos(a:mode, line_str, align_pattern, iteration, line_number, start, end)
 			let line_virtual_pos += [[real_pos, virtual_pos]]
 			if longest != -1 && virtual_pos != -1 && virtual_pos != longest
 				let changed = 1 " TODO: Detect changes in 'all' mode
@@ -100,7 +99,11 @@ function! s:align(mode, type, vis, align_char)
 		endif
 	endfor
 
-	silent! call repeat#set("\<Plug>LionRepeat".align_char)
+	if align_pattern[0] == '/'
+		silent! call repeat#set("\<Plug>LionRepeat".align_pattern."")
+	else
+		silent! call repeat#set("\<Plug>LionRepeat".align_pattern)
+	endif
 endfunction
 
 function! s:getpos(start, end, mode)

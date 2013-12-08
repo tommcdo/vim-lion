@@ -99,7 +99,11 @@ function! s:align(mode, type, vis, align_char)
 		endif
 	endfor
 
-	silent! call repeat#set("\<Plug>LionRepeat".align_pattern)
+	if align_pattern[0] == '/'
+		silent! call repeat#set("\<Plug>LionRepeat".align_pattern."\<CR>")
+	else
+		silent! call repeat#set("\<Plug>LionRepeat".align_pattern)
+	endif
 endfunction
 
 function! s:getpos(start, end, mode)

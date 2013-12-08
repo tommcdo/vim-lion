@@ -35,13 +35,12 @@ function! s:align(mode, type, vis, align_char)
 	let &selection = "inclusive"
 
 	" Do we have a character from argument, or should we get one from input?
-	if a:align_char == ''
+	let align_pattern = a:align_char
+	if align_pattern == ''
 		let align_pattern = nr2char(getchar())
-		if align_pattern == '/'
-			let align_pattern .= input('Pattern [/]: ')
-		endif
-	else
-		let align_pattern = a:align_char
+	endif
+	if align_pattern == '/'
+		let align_pattern .= input('Pattern [/]: ')
 	endif
 
 	" Determine range boundaries

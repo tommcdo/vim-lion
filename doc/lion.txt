@@ -28,14 +28,6 @@ for alignment. If the pattern is left blank, "/" will be used.
                         {char} in the line up to the [count]th position in
                         the line.
 
-                                                *g=* *lion-equal-align*
-[count]g={motion}       Align text within {motion} to [count] "=" characters.
-                        Synonym for "[count]gl{motion}=".
-
-                                                *g:* *lion-colon-align*
-[count]g:{motion}       Align text within {motion} to [count] ":" characters.
-                        Synonym for "[count]gL{motion}:".
-
 EXAMPLES                                        *lion-examples*
 
 In the below examples, an asterisk (*) denotes the position of cursor. This
@@ -44,7 +36,7 @@ is primarily to help understand {motion}s from the example commands.
   Old text                  Command     New text ~
 
   $name = "Tom";            glip=       $name     = "Tom";
-  $birthday =* "Jan 12";    g=ip        $birthday = "Jan 12";
+  $birthday =* "Jan 12";                $birthday = "Jan 12";
   $age = 25;                            $age      = 25;
 
   fish, monkey, giraffe*    2gL3j,      fish,    monkey,   giraffe
@@ -61,8 +53,6 @@ Mappings can be configured with the following options:
   g:lion_create_maps   Whether to create mappings         1
   g:lion_map_right     Mapping for right-align operator   gl
   g:lion_map_left      Mapping for left-align operator    gL
-  g:lion_map_equal     Mapping for equal-align operator   g=
-  g:lion_map_colon     Mapping for colon-align operator   g:
 
 ISSUES AND TODO                                 *lion-issues* *lion-todo*
 

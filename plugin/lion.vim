@@ -21,14 +21,6 @@ function! s:alignLeft(type, ...)
 	return s:align('left', a:type, a:0, '')
 endfunction
 
-function! s:alignEqual(type, ...)
-	return s:align('right', a:type, a:0, '=')
-endfunction
-
-function! s:alignColon(type, ...)
-	return s:align('left', a:type, a:0, ':')
-endfunction
-
 " Align a range to a particular character
 function! s:align(mode, type, vis, align_char)
 	let sel_save = &selection
@@ -177,10 +169,6 @@ nnoremap <silent> <expr> <Plug>LionRight <SID>command("<SID>alignRight")
 vnoremap <silent> <expr> <Plug>VLionRight <SID>command("<SID>alignRight", 1)
 nnoremap <silent> <expr> <Plug>LionLeft <SID>command("<SID>alignLeft")
 vnoremap <silent> <expr> <Plug>VLionLeft <SID>command("<SID>alignLeft", 1)
-nnoremap <silent> <expr> <Plug>LionEqual <SID>command("<SID>alignEqual")
-vnoremap <silent> <expr> <Plug>VLionEqual <SID>command("<SID>alignEqual", 1)
-nnoremap <silent> <expr> <Plug>LionColon <SID>command("<SID>alignColon")
-vnoremap <silent> <expr> <Plug>VLionColon <SID>command("<SID>alignColon", 1)
 
 if !exists('g:lion_create_maps')
 	let g:lion_create_maps = 1
@@ -193,15 +181,7 @@ if g:lion_create_maps
 	if !exists('g:lion_map_left')
 		let g:lion_map_left = 'gL'
 	endif
-	if !exists('g:lion_map_equal')
-		let g:lion_map_equal = 'g='
-	endif
-	if !exists('g:lion_map_colon')
-		let g:lion_map_colon = 'g:'
-	endif
 	
 	call s:assign_map(g:lion_map_right, 'Right')
 	call s:assign_map(g:lion_map_left, 'Left')
-	call s:assign_map(g:lion_map_equal, 'Equal')
-	call s:assign_map(g:lion_map_colon, 'Colon')
 endif

@@ -26,76 +26,80 @@ function! s:align(mode, type, vis, align_char)
 	let sel_save = &selection
 	let &selection = "inclusive"
 
-	" Do we have a character from argument, or should we get one from input?
-	let align_pattern = a:align_char
-	if align_pattern == ''
-		let align_pattern = nr2char(getchar())
-	endif
-	if align_pattern == '/'
-		let align_pattern .= input('Pattern [/]: ')
-	endif
+	try
+		" Do we have a character from argument, or should we get one from input?
+		let align_pattern = a:align_char
+		if align_pattern == ''
+			let align_pattern = nr2char(getchar())
+		endif
+		if align_pattern == '/'
+			let align_pattern .= input('Pattern [/]: ')
+		endif
 
-	" Determine range boundaries
-	if a:vis
-		let pos = s:getpos("'<", "'>", visualmode())
-	else
-		let pos = s:getpos("'[", "']", a:type)
-	endif
-	let [start_line, end_line, start_col, end_col, middle_start_col, middle_end_col] = pos
+		" Determine range boundaries
+		if a:vis
+			let pos = s:getpos("'<", "'>", visualmode())
+		else
+			let pos = s:getpos("'[", "']", a:type)
+		endif
+		let [start_line, end_line, start_col, end_col, middle_start_col, middle_end_col] = pos
 
-	let changed = 0 " TODO: Use this for 'all' mode when I get around to it
+		let changed = 0 " TODO: Use this for 'all' mode when I get around to it
 
-	" Align for each character up to count
-	for iteration in range(1, s:count)
-		let line_virtual_pos = [] " Keep track of positions
-		let longest = -1          " Track longest sequence
+		" Align for each character up to count
+		for iteration in range(1, s:count)
+			let line_virtual_pos = [] " Keep track of positions
+			let longest = -1          " Track longest sequence
 
-		" Find the longest substring before the align character
-		for line_number in range(start_line, end_line)
-			if line_number == start_line
-				let start = start_col
-			else
-				let start = middle_start_col
-			endif
-			if line_number == end_line
-				let end = end_col
-			else
-				let end = middle_end_col
-			endif
-			let line_str = getline(line_number)
-			" Find the 'real' and 'virtual' positions of the align character in this line
-			let [real_pos, virtual_pos] = s:match_pos(a:mode, line_str, align_pattern, iteration, line_number, start, end)
-			let line_virtual_pos += [[real_pos, virtual_pos]]
-			if longest != -1 && virtual_pos != -1 && virtual_pos != longest
+			" Find the longest substring before the align character
+			for line_number in range(start_line, end_line)
+				if line_number == start_line
+					let start = start_col
+				else
+					let start = middle_start_col
+				endif
+				if line_number == end_line
+					let end = end_col
+				else
+					let end = middle_end_col
+				endif
+				let line_str = getline(line_number)
+				" Find the 'real' and 'virtual' positions of the align character in this line
+				let [real_pos, virtual_pos] = s:match_pos(a:mode, line_str, align_pattern, iteration, line_number, start, end)
+				let line_virtual_pos += [[real_pos, virtual_pos]]
+				if longest != -1 && virtual_pos != -1 && virtual_pos != longest
+					let changed = 1 " TODO: Detect changes in 'all' mode
+				endif
+				let longest = max([longest, virtual_pos])
+			endfor
+
+			" Align each line according to the longest
+			for line_number in range(start_line, end_line)
+				let line_str = getline(line_number)
+				let [real_pos, virtual_pos] = line_virtual_pos[(line_number - start_line)]
+				if virtual_pos != -1 && virtual_pos < longest
+					let spaces = repeat(' ', (longest - virtual_pos))
+					if real_pos == 0
+						let new_line = spaces . line_str
+					else
+						let new_line = line_str[:(real_pos - 1)] . spaces . line_str[(real_pos):]
+					endif
+					call setline(line_number, new_line)
+				endif
+			endfor
+			if longest == -1
 				let changed = 1 " TODO: Detect changes in 'all' mode
 			endif
-			let longest = max([longest, virtual_pos])
 		endfor
 
-		" Align each line according to the longest
-		for line_number in range(start_line, end_line)
-			let line_str = getline(line_number)
-			let [real_pos, virtual_pos] = line_virtual_pos[(line_number - start_line)]
-			if virtual_pos != -1 && virtual_pos < longest
-				let spaces = repeat(' ', (longest - virtual_pos))
-				if real_pos == 0
-					let new_line = spaces . line_str
-				else
-					let new_line = line_str[:(real_pos - 1)] . spaces . line_str[(real_pos):]
-				endif
-				call setline(line_number, new_line)
-			endif
-		endfor
-		if longest == -1
-			let changed = 1 " TODO: Detect changes in 'all' mode
+		if align_pattern[0] == '/'
+			silent! call repeat#set("\<Plug>LionRepeat".align_pattern."\<CR>")
+		else
+			silent! call repeat#set("\<Plug>LionRepeat".align_pattern)
 		endif
-	endfor
-
-	if align_pattern[0] == '/'
-		silent! call repeat#set("\<Plug>LionRepeat".align_pattern."\<CR>")
-	else
-		silent! call repeat#set("\<Plug>LionRepeat".align_pattern)
-	endif
+	finally
+		let &selection = sel_save
+	endtry
 endfunction
 
 function! s:getpos(start, end, mode)
@@ -181,7 +185,7 @@ if g:lion_create_maps
 	if !exists('g:lion_map_left')
 		let g:lion_map_left = 'gL'
 	endif
-	
+
 	call s:assign_map(g:lion_map_right, 'Right')
 	call s:assign_map(g:lion_map_left, 'Left')
 endif

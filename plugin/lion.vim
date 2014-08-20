@@ -3,6 +3,7 @@
 " Version:      1.0
 
 let s:count = 1
+let g:lion_prompt = 'Pattern [/]: '
 
 function! s:command(func, ...)
 	let s:count = v:count1
@@ -33,7 +34,7 @@ function! s:align(mode, type, vis, align_char)
 			let align_pattern = nr2char(getchar())
 		endif
 		if align_pattern == '/'
-			let align_pattern .= input('Pattern [/]: ')
+			let align_pattern .= input(g:lion_prompt)
 		endif
 
 		" Determine range boundaries

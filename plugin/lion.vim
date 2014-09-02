@@ -3,8 +3,9 @@
 " Version:      1.0
 
 let s:count = 1
-let g:lion_prompt = 'Pattern [/]: '
-
+if !exists('g:lion_prompt')
+	let g:lion_prompt = 'Pattern [/]: '
+endif
 function! s:command(func, ...)
 	let s:count = v:count1
 	if a:0

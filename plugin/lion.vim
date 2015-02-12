@@ -36,6 +36,8 @@ function! s:align(mode, type, vis, align_char)
 		endif
 		if align_pattern == '/'
 			let align_pattern .= input(g:lion_prompt)
+		elseif align_pattern == ' '
+			let align_pattern = '/\S\zs\s'
 		endif
 
 		" Determine range boundaries

@@ -149,12 +149,12 @@ endfunction
 
 " Get the first non-whitespace after [count] instances of [char]
 function! s:first_non_ws_after(line, pattern, start, count)
-	let char_pos = match(a:line, a:pattern, a:start, a:count)
+	let pattern = len(a:pattern) == 1 ? a:pattern . '\zs' : a:pattern
+	let char_pos = match(a:line, pattern, a:start, a:count)
 	if char_pos == -1
 		return -1
 	else
-		let m = match(a:line, '[^[:space:]]', char_pos + 1)
-		return m
+		return match(a:line, '\S', char_pos)
 	endif
 endfunction
 

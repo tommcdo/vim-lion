@@ -31,8 +31,22 @@ function! s:align(mode, type, vis, align_char)
 	try
 		" Do we have a character from argument, or should we get one from input?
 		let align_pattern = a:align_char
+		let skip = 0
 		if align_pattern == ''
 			let align_pattern = nr2char(getchar())
+			if align_pattern =~ '[1-9]'
+				while 1
+					let char = nr2char(getchar())
+					if char !~ '[0-9]'
+						break
+					endif
+					let align_pattern .= char
+				endwhile
+				if char != "\<CR>"
+					let skip = str2nr(align_pattern) - 1
+					let align_pattern = char
+				endif
+			endif
 		endif
 		if align_pattern == '/'
 			let align_pattern .= input(g:lion_prompt)
@@ -69,7 +83,7 @@ function! s:align(mode, type, vis, align_char)
 				endif
 				let line_str = getline(line_number)
 				" Find the 'real' and 'virtual' positions of the align character in this line
-				let [real_pos, virtual_pos] = s:match_pos(a:mode, line_str, align_pattern, iteration, line_number, start, end)
+				let [real_pos, virtual_pos] = s:match_pos(a:mode, line_str, align_pattern, skip + iteration, line_number, start, end)
 				let line_virtual_pos += [[real_pos, virtual_pos]]
 				if longest != -1 && virtual_pos != -1 && virtual_pos != longest
 					let changed = 1 " TODO: Detect changes in 'all' mode

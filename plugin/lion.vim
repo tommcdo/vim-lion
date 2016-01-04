@@ -7,7 +7,7 @@ if !exists('g:lion_prompt')
 	let g:lion_prompt = 'Pattern [/]: '
 endif
 function! s:command(func, ...)
-	let s:count = v:count1
+	let s:count = v:count
 	if a:0
 		return ":" . "\<C-U>call " . a:func . "(visualmode(), 1)\<CR>"
 	else
@@ -62,10 +62,9 @@ function! s:align(mode, type, vis, align_char)
 		endif
 		let [start_line, end_line, start_col, end_col, middle_start_col, middle_end_col] = pos
 
-		let changed = 0 " TODO: Use this for 'all' mode when I get around to it
-
-		" Align for each character up to count
-		for iteration in range(1, s:count)
+		" Align for each character up to count or maximum occurrences
+		let iteration = 1
+		while 1
 			let line_virtual_pos = [] " Keep track of positions
 			let longest = -1          " Track longest sequence
 
@@ -85,9 +84,6 @@ function! s:align(mode, type, vis, align_char)
 				" Find the 'real' and 'virtual' positions of the align character in this line
 				let [real_pos, virtual_pos] = s:match_pos(a:mode, line_str, align_pattern, skip + iteration, line_number, start, end)
 				let line_virtual_pos += [[real_pos, virtual_pos]]
-				if longest != -1 && virtual_pos != -1 && virtual_pos != longest
-					let changed = 1 " TODO: Detect changes in 'all' mode
-				endif
 				let longest = max([longest, virtual_pos])
 			endfor
 
@@ -105,10 +101,11 @@ function! s:align(mode, type, vis, align_char)
 					call setline(line_number, new_line)
 				endif
 			endfor
-			if longest == -1
-				let changed = 1 " TODO: Detect changes in 'all' mode
+			if s:count - iteration == 0 || longest == -1
+				break
 			endif
-		endfor
+			let iteration += 1
+		endwhile
 
 		if align_pattern[0] == '/'
 			silent! call repeat#set("\<Plug>LionRepeat".align_pattern."\<CR>")

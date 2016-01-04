@@ -21,12 +21,14 @@ for alignment. If the pattern is left blank, "/" will be used.
                         of {char}. Spaces are added to the left of each
                         {char} in the line up to the [count]th position in
                         the line.
+                        If no [count] is specified, align all occurrences.
 
                                                 *gL* *lion-left-align*
 [count]gL{motion}{char} Align text within {motion} to [count] occurrences
                         of {char}. Spaces are added to the right of each
                         {char} in the line up to the [count]th position in
                         the line.
+                        If no [count] is specified, align all occurrences.
 
 EXAMPLES                                        *lion-examples*
 

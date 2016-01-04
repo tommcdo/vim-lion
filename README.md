@@ -7,7 +7,8 @@ block of text.
 
 The two operators are `gl` and `gL`. `gl` will add spaces to the left of
 the alignment character, and `gL` will add spaces to the right. Both
-operators accept a count, a motion, and a single character.
+operators accept a count, a motion, and a single character. Without a
+count, all occurrences of the character will be aligned.
 
 For example, `glip=` will turn
 

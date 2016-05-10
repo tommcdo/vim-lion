@@ -3,9 +3,9 @@
 " Version:      1.0
 
 let s:count = 1
-if !exists('g:lion_prompt')
-	let g:lion_prompt = 'Pattern [/]: '
-endif
+
+let s:lion_prompt = get(g:, 'lion_prompt', 'Pattern [/]: ')
+
 function! s:command(func, ...)
 	let s:count = v:count
 	if a:0
@@ -49,7 +49,7 @@ function! s:align(mode, type, vis, align_char)
 			endif
 		endif
 		if align_pattern == '/'
-			let align_pattern .= input(g:lion_prompt)
+			let align_pattern .= input(s:lion_prompt)
 		elseif align_pattern == ' '
 			let align_pattern = '/\S\zs\s'
 		endif
@@ -189,18 +189,7 @@ vnoremap <silent> <expr> <Plug>VLionRight <SID>command("<SID>alignRight", 1)
 nnoremap <silent> <expr> <Plug>LionLeft <SID>command("<SID>alignLeft")
 vnoremap <silent> <expr> <Plug>VLionLeft <SID>command("<SID>alignLeft", 1)
 
-if !exists('g:lion_create_maps')
-	let g:lion_create_maps = 1
-endif
-
-if g:lion_create_maps
-	if !exists('g:lion_map_right')
-		let g:lion_map_right = 'gl'
-	endif
-	if !exists('g:lion_map_left')
-		let g:lion_map_left = 'gL'
-	endif
-
-	call s:assign_map(g:lion_map_right, 'Right')
-	call s:assign_map(g:lion_map_left, 'Left')
+if get(g:, 'lion_create_maps', 1)
+	call s:assign_map(get(g:, 'lion_map_right', 'gl'), 'Right')
+	call s:assign_map(get(g:, 'lion_map_left',  'gL'), 'Left')
 endif

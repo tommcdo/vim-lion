@@ -50,11 +50,12 @@ CONFIGURATION                                   *lion-configuration*
 
 Mappings can be configured with the following options:
 
-  Option               Description                        Default ~
+  Option                  Description                        Default ~
 
-  g:lion_create_maps   Whether to create mappings         1
-  g:lion_map_right     Mapping for right-align operator   gl
-  g:lion_map_left      Mapping for left-align operator    gL
+  g:lion_create_maps      Whether to create mappings         1
+  g:lion_squeeze_spaces   Whether to squeeze extra spaces    0
+  g:lion_map_right        Mapping for right-align operator   gl
+  g:lion_map_left         Mapping for left-align operator    gL
 
 ISSUES AND TODO                                 *lion-issues* *lion-todo*
 

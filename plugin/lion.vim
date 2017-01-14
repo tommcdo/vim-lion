@@ -2,8 +2,6 @@
 " Maintainer:   Tom McDonald <http://github.com/tommcdo>
 " Version:      1.0
 
-let b:lion_squeeze_spaces = get(b:, 'lion_squeeze_spaces', 0)
-
 let s:count = 1
 
 let s:lion_prompt = get(g:, 'lion_prompt', 'Pattern [/]: ')
@@ -64,8 +62,17 @@ function! s:align(mode, type, vis, align_char)
 		endif
 		let [start_line, end_line, start_col, end_col, middle_start_col, middle_end_col] = pos
 
+		" Check for 'lion_squeeze_spaces' option
+		if get(b:, 'lion_squeeze_spaces', 0)
+			let s:lion_squeeze_spaces = b:lion_squeeze_spaces
+		elseif get(g:, 'lion_squeeze_spaces', 0)
+			let s:lion_squeeze_spaces = g:lion_squeeze_spaces
+		else
+			let s:lion_squeeze_spaces = 0
+		endif
+
 		" Squeeze extra spaces before aligning
-		if b:lion_squeeze_spaces == 1
+		if s:lion_squeeze_spaces == 1
 			for lnum in range(start_line, end_line)
 				call setline(lnum, substitute(getline(lnum), '\(^\s*\)\@<! \{2,}', ' ', 'g'))
 			endfor

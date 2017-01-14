@@ -9,7 +9,7 @@ INTRODUCTION                                    *lion*
 
 This plugin provides operators for aligning text to a specific character.
 The operators are designed to work as closely as possible to the built-in
-Vim |operators|. 
+Vim |operators|.
 
 MAPPINGS                                        *lion-mappings*
 
@@ -53,7 +53,8 @@ Mappings can be configured with the following options:
   Option                  Description                        Default ~
 
   g:lion_create_maps      Whether to create mappings         1
-  b:lion_squeeze_spaces   Whether to squeeze extra spaces    0
+  b:lion_squeeze_spaces,
+  g:lion_squeeze_spaces   Whether to squeeze extra spaces    0
   g:lion_map_right        Mapping for right-align operator   gl
   g:lion_map_left         Mapping for left-align operator    gL
 

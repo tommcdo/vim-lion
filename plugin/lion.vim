@@ -62,6 +62,22 @@ function! s:align(mode, type, vis, align_char)
 		endif
 		let [start_line, end_line, start_col, end_col, middle_start_col, middle_end_col] = pos
 
+		" Check for 'lion_squeeze_spaces' options
+		if exists('b:lion_squeeze_spaces')
+			let s:lion_squeeze_spaces = get(b:, 'lion_squeeze_spaces')
+		elseif exists('g:lion_squeeze_spaces')
+			let s:lion_squeeze_spaces = get(g:, 'lion_squeeze_spaces')
+		else
+			let s:lion_squeeze_spaces = 0
+		endif
+
+		" Squeeze extra spaces before aligning
+		if s:lion_squeeze_spaces
+			for lnum in range(start_line, end_line)
+				call setline(lnum, substitute(getline(lnum), '\(^\s*\)\@<! \{2,}', ' ', 'g'))
+			endfor
+		endif
+
 		" Align for each character up to count or maximum occurrences
 		let iteration = 1
 		while 1

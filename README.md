@@ -97,3 +97,7 @@ $i        = 5;
 $user     = 'tommcdo';
 $stuff    = array(1, 2, 3);
 ```
+
+Tips and Tricks
+---------------
+ - Have `g(b):lion_squeeze_spaces` enabled, you can just squeeze all spaces for the line(s) with: <kbd>g</kbd><kbd>l</kbd>(movement keys)<kbd>Esc</kbd>.

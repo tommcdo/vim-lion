@@ -148,7 +148,8 @@ endfunction
 " Match the position of a character in a line after accounting for artificial width set by tabs
 function! s:match_pos(mode, line, char, count, line_number, start, end)
 	if strlen(a:char) == 1
-		let pattern = escape(a:char, '~^$.')
+		" Ignore the 'ignorecase' setting
+		let pattern = '\C' . escape(a:char, '~^$.')
 	else
 		let pattern = a:char[1:]
 		" Add start-of-match anchor at the end if there isn't already one in the pattern

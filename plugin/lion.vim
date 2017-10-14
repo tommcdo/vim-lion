@@ -9,9 +9,9 @@ let s:lion_prompt = get(g:, 'lion_prompt', 'Pattern [/]: ')
 function! s:command(func, ...)
 	let s:count = v:count
 	if a:0
-		return ":" . "\<C-U>call " . a:func . "(visualmode(), 1)\<CR>"
+		return ':' . "\<C-U>call " . a:func . "(visualmode(), 1)\<CR>"
 	else
-		return ":" . "\<C-U>set opfunc=" . a:func . "\<CR>g@"
+		return ':' . "\<C-U>set opfunc=" . a:func . "\<CR>g@"
 	endif
 endfunction
 
@@ -26,31 +26,31 @@ endfunction
 " Align a range to a particular character
 function! s:align(mode, type, vis, align_char)
 	let sel_save = &selection
-	let &selection = "inclusive"
+	let &selection = 'inclusive'
 
 	try
 		" Do we have a character from argument, or should we get one from input?
 		let align_pattern = a:align_char
 		let skip = 0
-		if align_pattern == ''
+		if align_pattern ==# ''
 			let align_pattern = nr2char(getchar())
-			if align_pattern =~ '[1-9]'
+			if align_pattern =~# '[1-9]'
 				while 1
 					let char = nr2char(getchar())
-					if char !~ '[0-9]'
+					if char !~# '[0-9]'
 						break
 					endif
 					let align_pattern .= char
 				endwhile
-				if char != "\<CR>"
+				if char !=# "\<CR>"
 					let skip = str2nr(align_pattern) - 1
 					let align_pattern = char
 				endif
 			endif
 		endif
-		if align_pattern == '/'
+		if align_pattern ==# '/'
 			let align_pattern .= input(s:lion_prompt)
-		elseif align_pattern == ' '
+		elseif align_pattern ==# ' '
 			let align_pattern = '/\S\zs\s'
 		endif
 
@@ -123,7 +123,7 @@ function! s:align(mode, type, vis, align_char)
 			let iteration += 1
 		endwhile
 
-		if align_pattern[0] == '/'
+		if align_pattern[0] ==# '/'
 			silent! call repeat#set("\<Plug>LionRepeat".align_pattern."\<CR>")
 		else
 			silent! call repeat#set("\<Plug>LionRepeat".align_pattern)
@@ -137,9 +137,9 @@ function! s:getpos(start, end, mode)
 	let [_, start_line, start_col, _] = getpos(a:start)
 	let [_, end_line, end_col, _] = getpos(a:end)
 	let [middle_start_col, middle_end_col] = [0, -1]
-	if a:mode == 'V' || a:mode == 'line'
+	if a:mode ==# 'V' || a:mode ==# 'line'
 		let [start_col, end_col] = [0, -1]
-	elseif a:mode == "\<C-V>"
+	elseif a:mode ==# "\<C-V>"
 		let [middle_start_col, middle_end_col] = [start_col, end_col]
 	endif
 	return [start_line, end_line, start_col, end_col, middle_start_col, middle_end_col]
@@ -153,7 +153,7 @@ function! s:match_pos(mode, line, char, count, line_number, start, end)
 	else
 		let pattern = a:char[1:]
 		" Add start-of-match anchor at the end if there isn't already one in the pattern
-		if a:mode == 'left' && match(pattern, '\\zs') == -1
+		if a:mode ==# 'left' && match(pattern, '\\zs') ==# -1
 			let pattern .= '\zs'
 		endif
 	endif
@@ -162,9 +162,9 @@ function! s:match_pos(mode, line, char, count, line_number, start, end)
 	else
 		let line = a:line[:(a:end - 1)]
 	endif
-	if a:mode == 'right'
+	if a:mode ==# 'right'
 		let real_pos = match(line, pattern, a:start - 1, a:count)
-	elseif a:mode == 'left'
+	elseif a:mode ==# 'left'
 		let real_pos = s:first_non_ws_after(line, pattern, a:start - 1, a:count)
 	endif
 	if real_pos == -1
@@ -193,7 +193,7 @@ function! s:debug_str(str)
 endfunction
 
 function! s:assign_map(map, func)
-	if a:map == ''
+	if a:map ==# ''
 		return
 	endif
 	execute 'nmap <silent> ' . a:map . ' <Plug>Lion' . a:func

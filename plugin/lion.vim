@@ -152,10 +152,10 @@ function! s:match_pos(mode, line, char, count, line_number, start, end)
 		let pattern = '\C' . escape(a:char, '~^$.')
 	else
 		let pattern = a:char[1:]
-		" Add start-of-match anchor at the end if there isn't already one in the pattern
-		if a:mode ==# 'left' && match(pattern, '\\zs') ==# -1
-			let pattern .= '\zs'
-		endif
+	endif
+	" Add start-of-match anchor at the end if there isn't already one in the pattern
+	if a:mode ==# 'left' && match(pattern, '\\zs') == -1
+		let pattern .= '\zs'
 	endif
 	if a:end == -1
 		let line = a:line
@@ -177,8 +177,7 @@ endfunction
 
 " Get the first non-whitespace after [count] instances of [char]
 function! s:first_non_ws_after(line, pattern, start, count)
-	let pattern = len(a:pattern) == 1 ? a:pattern . '\zs' : a:pattern
-	let char_pos = match(a:line, pattern, a:start, a:count)
+	let char_pos = match(a:line, a:pattern, a:start, a:count)
 	if char_pos == -1
 		return -1
 	else

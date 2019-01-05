@@ -196,14 +196,14 @@ function! s:assign_map(map, func)
 		return
 	endif
 	execute 'nmap <silent> ' . a:map . ' <Plug>Lion' . a:func
-	execute 'vmap <silent> ' . a:map . ' <Plug>VLion' . a:func
+	execute 'xmap <silent> ' . a:map . ' <Plug>VLion' . a:func
 endfunction
 
 nnoremap <silent> <Plug>LionRepeat .
 nnoremap <silent> <expr> <Plug>LionRight <SID>command("<SID>alignRight")
-vnoremap <silent> <expr> <Plug>VLionRight <SID>command("<SID>alignRight", 1)
+xnoremap <silent> <expr> <Plug>VLionRight <SID>command("<SID>alignRight", 1)
 nnoremap <silent> <expr> <Plug>LionLeft <SID>command("<SID>alignLeft")
-vnoremap <silent> <expr> <Plug>VLionLeft <SID>command("<SID>alignLeft", 1)
+xnoremap <silent> <expr> <Plug>VLionLeft <SID>command("<SID>alignLeft", 1)
 
 if get(g:, 'lion_create_maps', 1)
 	call s:assign_map(get(g:, 'lion_map_right', 'gl'), 'Right')

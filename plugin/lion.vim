@@ -80,7 +80,7 @@ function! s:align(mode, type, vis, align_char)
 		endif
 
 		" Align for each character up to count or maximum occurrences
-        let prev_longest = 0
+		let prev_longest = 0
 		let iteration = 1
 		while 1
 			let line_virtual_pos = [] " Keep track of positions
@@ -105,9 +105,9 @@ function! s:align(mode, type, vis, align_char)
 				let longest = max([longest, virtual_pos])
 			endfor
 
-            if s:lion_max_length > 0
-                let longest = min([longest, prev_longest + s:lion_max_length])
-            endif
+			if s:lion_max_length > 0
+				let longest = min([longest, prev_longest + s:lion_max_length])
+			endif
 
 			" Align each line according to the longest
 			for line_number in range(start_line, end_line)
@@ -127,7 +127,7 @@ function! s:align(mode, type, vis, align_char)
 				break
 			endif
 			let iteration += 1
-            let prev_longest = longest
+			let prev_longest = longest
 		endwhile
 
 		if align_pattern[0] ==# '/'

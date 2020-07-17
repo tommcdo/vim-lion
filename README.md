@@ -2,7 +2,7 @@ lion.vim
 ========
 
 Lion.vim is a tool for aligning text by some character. It defines some
-Vim operators that can be used with motion commands to align a targetted
+Vim operators that can be used with motion commands to align a targeted
 block of text.
 
 The two operators are `gl` and `gL`. `gl` will add spaces to the left of

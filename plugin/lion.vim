@@ -5,6 +5,7 @@
 let s:count = 1
 
 let s:lion_prompt = get(g:, 'lion_prompt', 'Pattern [/]: ')
+let s:lion_max_length = get(g:, 'lion_max_length', 0)
 
 function! s:command(func, ...)
 	let s:count = v:count
@@ -79,6 +80,7 @@ function! s:align(mode, type, vis, align_char)
 		endif
 
 		" Align for each character up to count or maximum occurrences
+		let prev_longest = 0
 		let iteration = 1
 		while 1
 			let line_virtual_pos = [] " Keep track of positions
@@ -103,6 +105,10 @@ function! s:align(mode, type, vis, align_char)
 				let longest = max([longest, virtual_pos])
 			endfor
 
+			if s:lion_max_length > 0
+				let longest = min([longest, prev_longest + s:lion_max_length])
+			endif
+
 			" Align each line according to the longest
 			for line_number in range(start_line, end_line)
 				let line_str = getline(line_number)
@@ -121,6 +127,7 @@ function! s:align(mode, type, vis, align_char)
 				break
 			endif
 			let iteration += 1
+			let prev_longest = longest
 		endwhile
 
 		if align_pattern[0] ==# '/'

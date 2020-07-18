@@ -57,6 +57,8 @@ Mappings can be configured with the following options:
   g:lion_squeeze_spaces   Whether to squeeze extra spaces    0
   g:lion_map_right        Mapping for right-align operator   gl
   g:lion_map_left         Mapping for left-align operator    gL
+  g:lion_max_length       Maximum length between any two     0 (no limit)
+                          alignment characters
 
 ISSUES AND TODO                                 *lion-issues* *lion-todo*
 

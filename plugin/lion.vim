@@ -2,6 +2,10 @@
 " Maintainer:   Tom McDonald <http://github.com/tommcdo>
 " Version:      1.0
 
+if exists('g:loaded_lion') || &cp
+    finish
+endif
+let g:loaded_lion = 1
 let g:lion_count = 1
 
 function! s:command(func, ...)

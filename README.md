@@ -62,7 +62,7 @@ then simply copy and paste:
 
 ```sh
 cd ~/.vim/bundle
-git clone git://github.com/tommcdo/vim-lion.git
+git clone https://github.com/tommcdo/vim-lion.git
 ```
 
 Once help tags have been generated, you can view the manual with
